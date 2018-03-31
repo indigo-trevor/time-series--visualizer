@@ -23,15 +23,17 @@ Install the [Macaron](https://go-macaron.com/) web framework:
 
 ## Run
 ### Development
-Webpack development build: Open terminal and run:
+(Webpack development build) Open terminal and run:
 
 `npm run dev`
 
-Go server for development: Open second terminal a run:
+(Go server for development) Open second terminal a run:
 
 `go run server.go`
 
 ### Production
-Webpack production build (build is placed in __dist__ folder):
+(Webpack production build) Open terminal and run:
 
 `npm run build`
+
+*Packaged up build is placed in __dist__ folder*
