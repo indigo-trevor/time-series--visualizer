@@ -35,6 +35,8 @@ App displaying computer performance metrics through graphical visualizations.
 
 `go run server.go`
 
+3. Navigate to: __http://localhost:8080/__ to view app
+
 ### Production
 1. (Webpack production build) Open terminal and run:
 
