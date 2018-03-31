@@ -40,4 +40,4 @@ App displaying computer performance metrics through graphical visualizations.
 
 `npm run build`
 
-*Packaged up build is placed in __dist__ folder*
+*Packaged up build is placed in __dist__ folder (git-ignored)*
