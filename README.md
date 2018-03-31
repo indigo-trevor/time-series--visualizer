@@ -16,6 +16,7 @@ App displaying computer performance metrics through graphical visualizations.
 
 1. Make sure you place this project directory within your [__$GOPATH__](https://golang.org/doc/code.html#GOPATH)
 2. NPM installations
+
   `npm install -g webpack`
 
   `npm install`
@@ -26,16 +27,16 @@ App displaying computer performance metrics through graphical visualizations.
 
 ## Run
 ### Development
-(Webpack development build) Open terminal and run:
+1. (Webpack development build) Open terminal and run:
 
 `npm run dev`
 
-(Go server for development) Open second terminal a run:
+2. (Go server for development) Open second terminal a run:
 
 `go run server.go`
 
 ### Production
-(Webpack production build) Open terminal and run:
+1. (Webpack production build) Open terminal and run:
 
 `npm run build`
 
