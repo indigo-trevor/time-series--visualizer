@@ -28,6 +28,7 @@ Webpack development build: Open terminal and run:
 `npm run dev`
 
 Go server for development: Open second terminal a run:
+
 `go run server.go`
 
 ### Production
