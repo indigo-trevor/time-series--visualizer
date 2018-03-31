@@ -8,18 +8,21 @@ App displaying computer performance metrics through graphical visualizations.
 - Module Bundler: [Webpack 3](https://webpack.js.org/)
 
 ## Requirements
-- Go installed
-- NodeJS & npm installed
+- Install [Go](https://golang.org/doc/install)
+- Install [NodeJS](https://nodejs.org/en/download/)
+- Install [npm](https://www.npmjs.com/get-npm)
 
 ## Setup
 
-`npm install -g webpack`
+1. Make sure you place this project directory within your [__$GOPATH__](https://golang.org/doc/code.html#GOPATH)
+2. NPM installations
+  `npm install -g webpack`
 
-`npm install`
+  `npm install`
 
-Install the [Macaron](https://go-macaron.com/) web framework:
+3. Install the [Macaron](https://go-macaron.com/) web framework:
 
-`go get gopkg.in/macaron.v1`
+  `go get gopkg.in/macaron.v1`
 
 ## Run
 ### Development
