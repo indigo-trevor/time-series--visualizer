@@ -1,9 +1,8 @@
 {
-  "author": "Rafael Klaessen",
-  "license": "MIT",
+  "author": "Trevor Robinson",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rafaelklaessen/reactjs-go-boilerplate.git"
+    "url": "https://github.com/indigo-trevor/time-series--visualizer.git"
   },
   "scripts": {
     "dev": "webpack -d --watch",
@@ -15,10 +14,17 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "img-loader": "^2.0.1",
+    "node-sass": "^4.8.3",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   },
   "dependencies": {
-    "react": "^16.0.0"
+    "chart.js": "^2.7.2",
+    "react": "^16.0.0",
+    "react-chartjs-2": "^2.7.0"
   }
 }

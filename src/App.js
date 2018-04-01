@@ -1,30 +1,74 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import {Line} from 'react-chartjs-2';
+
 const API = '/cpu';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-
+    this.options = {
+      type: 'line',
+      data: {
+        labels: ['1', '2', '3', '4', '5'],
+        datasets: [{
+          label: "My First dataset",
+          backgroundColor: 'rgba(52, 152, 219, 0.75)',
+          data: [
+            5, 10, 15, 30, 50
+          ]
+        }]
+      },
+      options: {
+        title: {
+          display: false
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true
+          }],
+          yAxes: [{
+            type: "linear",
+            display: true,
+            position: "left"
+          }]
+        },
+        responsive: true
+      }
+    }
     this.state = {
       cpu: []
     };
   }
+
   componentDidMount() {
-    axios.get(API)
-      .then(res => {
-        const cpu = res.data;
-        console.log(cpu)
-        this.setState({ cpu });
-      });
+    this.canvas = document.querySelector('canvas')
+    this.ctx = this.canvas.getContext('2d')
+    this.chart = new Chart(this.ctx, this.options)
+    // axios.get(API)
+    //   .then(res => {
+    //     const cpu = res.data;
+    //     console.log(cpu)
+    //     this.setState({ cpu });
+    //   });
   }
+
   render() {
     return (
-      <div style={{ fontFamily: 'Roboto, sans-serif', textAlign: 'center' }}>
-        <h1>Trevor Robinson</h1>
-        <p>Edit <code>src/App.js</code> to get started</p>
+      <div>
+        <div className="container">
+          <div className="row">
+            <div className="col-12">
+              <h1>Time-series Visualization</h1>
+              <canvas />
+            </div>
+          </div>
+        </div>
       </div>
-    );
+    )
   }
 
 }
