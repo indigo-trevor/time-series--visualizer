@@ -48,12 +48,12 @@ export default class App extends Component {
     this.canvas = document.querySelector('canvas')
     this.ctx = this.canvas.getContext('2d')
     this.chart = new Chart(this.ctx, this.options)
-    // axios.get(API)
-    //   .then(res => {
-    //     const cpu = res.data;
-    //     console.log(cpu)
-    //     this.setState({ cpu });
-    //   });
+    axios.get(API)
+      .then(res => {
+        const cpu = res.data;
+        this.setState({ cpu });
+        console.log(cpu)
+      });
   }
 
   render() {
