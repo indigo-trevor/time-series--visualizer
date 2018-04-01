@@ -26,6 +26,7 @@
   "dependencies": {
     "chart.js": "^2.7.2",
     "react": "^16.0.0",
-    "react-chartjs-2": "^2.7.0"
+    "react-chartjs-2": "^2.7.0",
+    "react-timeout": "^1.1.1"
   }
 }

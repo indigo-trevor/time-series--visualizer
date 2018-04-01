@@ -31,6 +31,10 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    this.fetchCpuData()
+  }
+
+  fetchCpuData() {
     axios.get(API)
       .then(res => {
         const cpuResponse = res.data;
@@ -45,7 +49,6 @@ export default class App extends Component {
         this.handleUpdate();
       });
   }
-
   // Update CPU Chart Values
   handleUpdate() {
     var updatedChartData  = {};
@@ -53,14 +56,13 @@ export default class App extends Component {
     updatedChartData.datasets[0].data = this.state.cpu
     updatedChartData.labels = this.state.cpuKey
     const chartData = updatedChartData;
-    console.log(chartData)
-
-// Batching both updates to state in the same call to this.setState
-
+    // Batching both updates to state in the same call to this.setState
     this.setState({chartData, updated: !this.state.updated});
-
-// for updated, read from what is currently set as updated in state and do the opposite - creating a toggle
+    // for updated, read from what is currently set as updated in state and do the opposite - creating a toggle
+    console.log(chartData)
+    setTimeout(function() { this.handleUpdate(); }.bind(this), 3000);
   }
+
 
   render() {
     return(

@@ -1,46 +1,370 @@
 [
-    {
-        "id": 0,
-        "percent": 1
-    },
-    {
-        "id": 1,
-        "percent": 5
-    },
-    {
-        "id": 2,
-        "percent": 10
-    },
-    {
-        "id": 3,
-        "percent": 15
-    },
-    {
-        "id": 4,
-        "percent": 20
-    },
-    {
-        "id": 5,
-        "percent": 25
-    },
-    {
-        "id": 6,
-        "percent": 30
-    },
-    {
-        "id": 7,
-        "percent": 35
-    },
-    {
-        "id": 8,
-        "percent": 40
-    },
-    {
-        "id": 9,
-        "percent": 45
-    },
-    {
-        "id": 10,
-        "percent": 50
-    }
+  {
+    "id": 0,
+    "percent": 5
+  },
+  {
+    "id": 1,
+    "percent": 6
+  },
+  {
+    "id": 2,
+    "percent": 7
+  },
+  {
+    "id": 3,
+    "percent": 8
+  },
+  {
+    "id": 4,
+    "percent": 9
+  },
+  {
+    "id": 5,
+    "percent": 10
+  },
+  {
+    "id": 6,
+    "percent": 11
+  },
+  {
+    "id": 7,
+    "percent": 12
+  },
+  {
+    "id": 8,
+    "percent": 13
+  },
+  {
+    "id": 9,
+    "percent": 14
+  },
+  {
+    "id": 10,
+    "percent": 15
+  },
+  {
+    "id": 11,
+    "percent": 16
+  },
+  {
+    "id": 12,
+    "percent": 17
+  },
+  {
+    "id": 13,
+    "percent": 18
+  },
+  {
+    "id": 14,
+    "percent": 19
+  },
+  {
+    "id": 15,
+    "percent": 20
+  },
+  {
+    "id": 16,
+    "percent": 21
+  },
+  {
+    "id": 17,
+    "percent": 22
+  },
+  {
+    "id": 18,
+    "percent": 23
+  },
+  {
+    "id": 19,
+    "percent": 24
+  },
+  {
+    "id": 20,
+    "percent": 25
+  },
+  {
+    "id": 21,
+    "percent": 26
+  },
+  {
+    "id": 22,
+    "percent": 27
+  },
+  {
+    "id": 23,
+    "percent": 28
+  },
+  {
+    "id": 24,
+    "percent": 29
+  },
+  {
+    "id": 25,
+    "percent": 30
+  },
+  {
+    "id": 26,
+    "percent": 31
+  },
+  {
+    "id": 27,
+    "percent": 32
+  },
+  {
+    "id": 28,
+    "percent": 33
+  },
+  {
+    "id": 29,
+    "percent": 34
+  },
+  {
+    "id": 30,
+    "percent": 35
+  },
+  {
+    "id": 31,
+    "percent": 36
+  },
+  {
+    "id": 32,
+    "percent": 37
+  },
+  {
+    "id": 33,
+    "percent": 38
+  },
+  {
+    "id": 34,
+    "percent": 39
+  },
+  {
+    "id": 35,
+    "percent": 40
+  },
+  {
+    "id": 36,
+    "percent": 41
+  },
+  {
+    "id": 37,
+    "percent": 42
+  },
+  {
+    "id": 38,
+    "percent": 43
+  },
+  {
+    "id": 39,
+    "percent": 44
+  },
+  {
+    "id": 40,
+    "percent": 45
+  },
+  {
+    "id": 41,
+    "percent": 46
+  },
+  {
+    "id": 42,
+    "percent": 47
+  },
+  {
+    "id": 43,
+    "percent": 48
+  },
+  {
+    "id": 44,
+    "percent": 49
+  },
+  {
+    "id": 45,
+    "percent": 50
+  },
+  {
+    "id": 46,
+    "percent": 51
+  },
+  {
+    "id": 47,
+    "percent": 52
+  },
+  {
+    "id": 48,
+    "percent": 53
+  },
+  {
+    "id": 49,
+    "percent": 54
+  },
+  {
+    "id": 50,
+    "percent": 55
+  },
+  {
+    "id": 51,
+    "percent": 56
+  },
+  {
+    "id": 52,
+    "percent": 57
+  },
+  {
+    "id": 53,
+    "percent": 58
+  },
+  {
+    "id": 54,
+    "percent": 59
+  },
+  {
+    "id": 55,
+    "percent": 60
+  },
+  {
+    "id": 56,
+    "percent": 61
+  },
+  {
+    "id": 57,
+    "percent": 62
+  },
+  {
+    "id": 58,
+    "percent": 63
+  },
+  {
+    "id": 59,
+    "percent": 64
+  },
+  {
+    "id": 60,
+    "percent": 65
+  },
+  {
+    "id": 61,
+    "percent": 66
+  },
+  {
+    "id": 62,
+    "percent": 67
+  },
+  {
+    "id": 63,
+    "percent": 68
+  },
+  {
+    "id": 64,
+    "percent": 69
+  },
+  {
+    "id": 65,
+    "percent": 70
+  },
+  {
+    "id": 66,
+    "percent": 71
+  },
+  {
+    "id": 67,
+    "percent": 72
+  },
+  {
+    "id": 68,
+    "percent": 73
+  },
+  {
+    "id": 69,
+    "percent": 74
+  },
+  {
+    "id": 70,
+    "percent": 75
+  },
+  {
+    "id": 71,
+    "percent": 76
+  },
+  {
+    "id": 72,
+    "percent": 77
+  },
+  {
+    "id": 73,
+    "percent": 78
+  },
+  {
+    "id": 74,
+    "percent": 79
+  },
+  {
+    "id": 75,
+    "percent": 80
+  },
+  {
+    "id": 76,
+    "percent": 81
+  },
+  {
+    "id": 77,
+    "percent": 82
+  },
+  {
+    "id": 78,
+    "percent": 83
+  },
+  {
+    "id": 79,
+    "percent": 84
+  },
+  {
+    "id": 80,
+    "percent": 85
+  },
+  {
+    "id": 81,
+    "percent": 86
+  },
+  {
+    "id": 82,
+    "percent": 87
+  },
+  {
+    "id": 83,
+    "percent": 88
+  },
+  {
+    "id": 84,
+    "percent": 89
+  },
+  {
+    "id": 85,
+    "percent": 90
+  },
+  {
+    "id": 86,
+    "percent": 91
+  },
+  {
+    "id": 87,
+    "percent": 92
+  },
+  {
+    "id": 88,
+    "percent": 93
+  },
+  {
+    "id": 89,
+    "percent": 94
+  },
+  {
+    "id": 90,
+    "percent": 95
+  },
+  {
+    "id": 91,
+    "percent": 96
+  }
 ]
