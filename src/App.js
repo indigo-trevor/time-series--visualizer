@@ -85,8 +85,6 @@ export default class App extends Component {
         var cpuCounter = new Date().toLocaleTimeString();
         this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
         this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
-        // this.setState({ cpu });
-        // this.setState({ cpuKey });
         this.handleUpdate();
       });
   }
@@ -106,9 +104,13 @@ export default class App extends Component {
 
   render() {
     return(
-      <div>
-        <Line data={this.state.chartData} options={this.state.chartOptions}/>
-        <Button handleOnClick={this.handleUpdate} />
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <Line data={this.state.chartData} options={this.state.chartOptions}/>
+            <Button handleOnClick={this.handleUpdate} />
+          </div>
+        </div>
       </div>
     );
   }
