@@ -4,14 +4,54 @@ import {Line} from 'react-chartjs-2';
 
 const API = '/cpu';
 
-const chart1 = {
-  labels: [0],
+const chartCpu = {
+  labels: [0,1,2,3,4,5],
   datasets: [{
     data: [0],
     backgroundColor: [
-      '#4DB6AC'
-    ]
+      'rgba(247,148,30,0.5)'
+    ],
+    pointRadius: 0,
+    lineTension: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(247,148,30,1)',
+    pointBorderColor: 'rgba(247,148,30,1)',
+    pointBackgroundColor: 'rgba(247,148,30,0.5)'
   }]
+};
+
+const chartOptions = {
+  legend: {
+    display: false
+  },
+  scales: {
+    xAxes: [{
+      display: true,
+      gridLines: {
+        color: 'rgba(238,238,238,1)',
+        lineWidth: 0.5,
+        zeroLineColor: 'rgba(238,238,238,1)'
+      },
+      ticks: {
+        display: false,
+      }
+    }],
+    yAxes: [{
+      display: true,
+      gridLines: {
+        color: 'rgba(238,238,238,1)',
+        lineWidth: 0.5,
+        zeroLineColor: 'rgba(238,238,238,1)'
+      },
+      ticks: {
+        display: false,
+        beginAtZero: true,
+        steps: 10,
+        stepValue: 5,
+        max: 100
+      }
+    }]
+  }
 };
 
 const Button = (props) => (
@@ -22,7 +62,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chartData: chart1,
+      chartData: chartCpu,
+      chartOptions:chartOptions,
       updated: false,
       cpu: [],
       cpuKey: []
@@ -32,42 +73,41 @@ export default class App extends Component {
 
   componentDidMount() {
     this.fetchCpuData()
+    console.log(this.state.chartOptions)
   }
 
   fetchCpuData() {
     axios.get(API)
       .then(res => {
-        const cpuResponse = res.data;
-        const cpu = [];
-        const cpuKey = [];
-        for (var i = 0; i < cpuResponse.length; i++) {
-          cpu.push(cpuResponse[i].percent);
-          cpuKey.push(cpuResponse[i].id);
-        }
-        this.setState({ cpu });
-        this.setState({ cpuKey });
+        var cpu = [];
+        var cpuKey = [];
+        var cpuResponse = res.data;
+        var cpuCounter = new Date().toLocaleTimeString();
+        this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
+        this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
+        // this.setState({ cpu });
+        // this.setState({ cpuKey });
         this.handleUpdate();
       });
   }
   // Update CPU Chart Values
   handleUpdate() {
     var updatedChartData  = {};
-    updatedChartData = chart1;
+    updatedChartData = chartCpu;
     updatedChartData.datasets[0].data = this.state.cpu
     updatedChartData.labels = this.state.cpuKey
     const chartData = updatedChartData;
     // Batching both updates to state in the same call to this.setState
-    this.setState({chartData, updated: !this.state.updated});
+    this.setState({chartData,  updated: !this.state.updated});
     // for updated, read from what is currently set as updated in state and do the opposite - creating a toggle
-    console.log(chartData)
-    setTimeout(function() { this.handleUpdate(); }.bind(this), 3000);
+    setTimeout(function() { this.fetchCpuData(); }.bind(this), 2000);
   }
 
 
   render() {
     return(
       <div>
-        <Line data={this.state.chartData} />
+        <Line data={this.state.chartData} options={this.state.chartOptions}/>
         <Button handleOnClick={this.handleUpdate} />
       </div>
     );

@@ -2,19 +2,16 @@ package main
 
 // Importing dependencies
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-
+	"math/rand"
 	"gopkg.in/macaron.v1"
 )
 
 // Declaring CPU data
 type Cpu struct {
-	ID      int `json:"id"`
+	Id      int `json:"id"`
 	Percent int `json:"percent"`
 }
 
@@ -29,13 +26,14 @@ func main() {
 		ctx.HTML(200, "homepage", nil)
 	})
 
-	// Sets variable to function that parses in cpu.json file
-	cpus := getCpus()
-
 	// Creates endpoint for CPU data
-	m.Get("/cpu", func(ctx *macaron.Context) {
-		cpu := cpus
-		ctx.JSON(200, &cpu)
+	m.Get("/cpu", func(w, ctx *macaron.Context) {
+		localCpu := Cpu{
+			Id: 1,
+			Percent:  rand.Intn(25),
+		}
+
+		ctx.JSON(200, &localCpu)
 	})
 
 	m.Use(macaron.Static("dist"))
@@ -51,13 +49,3 @@ func main() {
 }
 
 // Function that parses in cpu.json file
-func getCpus() []Cpu {
-	raw, err := ioutil.ReadFile("./cpu.json")
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-	var c []Cpu
-	json.Unmarshal(raw, &c)
-	return c
-}
