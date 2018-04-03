@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import axios from 'axios';
 import {Line} from 'react-chartjs-2';
 
-const API = '/cpu';
+const apiCpuHeartbeat = '/cpu';
+const apiCpuHour = '/cpu/hour';
 
 const chartCpu = {
   labels: [0,1,2,3,4,5],
@@ -56,7 +57,7 @@ const chartOptions = {
 };
 
 const Button = (props) => (
-  <button id="update-chart" onClick={props.handleOnClick}>Update</button>
+  <button id="update-chart" onClick={props.handleOnClick}>View Hour Data</button>
 );
 
 export default class App extends Component {
@@ -74,11 +75,10 @@ export default class App extends Component {
 
   componentDidMount() {
     this.fetchCpuData()
-    console.log(this.state.chartOptions)
   }
 
   fetchCpuData() {
-    axios.get(API)
+    axios.get(apiCpuHeartbeat)
       .then(res => {
         var cpu = [];
         var cpuKey = [];
@@ -100,6 +100,15 @@ export default class App extends Component {
       });
   }
   // Update CPU Chart Values
+  viewCpuHour() {
+    console.log("viewing hour data")
+    axios.get(apiCpuHour)
+    .then(res => {
+      var cpuResponseHour = res.data;
+      console.log(cpuResponseHour)
+    });
+  }
+  // Update CPU Chart Values
   handleUpdate() {
     var updatedChartData  = {};
     updatedChartData = chartCpu;
@@ -112,10 +121,14 @@ export default class App extends Component {
     setTimeout(function() { this.fetchCpuData(); }.bind(this), 1000);
   }
 
-
   render() {
     return(
       <div className="container">
+      <div className="row">
+        <div className="col-6">
+          <Button handleOnClick={this.viewCpuHour} />
+        </div>
+      </div>
         <div className="row">
           <div className="col-6">
             <div className="chart-title-container">

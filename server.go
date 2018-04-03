@@ -6,6 +6,10 @@ import (
 	"log"
 	"net/http"
 	"math/rand"
+	"encoding/json"
+	"io/ioutil"
+	"os"
+
 	"gopkg.in/macaron.v1"
 )
 
@@ -25,8 +29,13 @@ func main() {
 	m.Get("/*", func(ctx *macaron.Context) {
 		ctx.HTML(200, "homepage", nil)
 	})
-
-	// Creates endpoint for CPU data
+	// For CPU hour data endpoint
+	cpusHour := getCpusHour()
+	m.Get("/cpu/hour", func(ctx *macaron.Context) {
+		cpuHour := cpusHour
+		ctx.JSON(200, &cpuHour)
+	})
+	// Creates endpoint for CPU heartbeat data
 	m.Get("/cpu", func(w, ctx *macaron.Context) {
 		localCpu := Cpu{
 			Id: 1,
@@ -48,4 +57,14 @@ func main() {
 	}
 }
 
-// Function that parses in cpu.json file
+// Function that parses in cpu--hour.json file
+func getCpusHour() []Cpu {
+	raw, err := ioutil.ReadFile("./cpu--hour.json")
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	var c []Cpu
+	json.Unmarshal(raw, &c)
+	return c
+}
