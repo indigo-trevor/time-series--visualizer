@@ -100,11 +100,13 @@ export default class App extends Component {
       cpuKey: [],
       cpuViewingHour: false,
       cpuLabel: '60 seconds',
-      hidden:true
+      hidden:true,
+      isCpuViewingHourOn: false
     }
     this.onClick = this.onClick.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.viewCpuHour = this.viewCpuHour.bind(this);
+    this.viewCpuMinute = this.viewCpuMinute.bind(this);
   }
 
   // On click, toggle display of Cpu Chart
@@ -157,8 +159,28 @@ export default class App extends Component {
         this.handleUpdate();
       });
   }
-  // Update CPU Chart Values
+  // Update CPU Chart Values showing the past minute
+  viewCpuMinute() {
+    this.setState({isCpuViewingHourOn: false });
+    console.log("viewing minute data")
+    this.setState({ cpuLabel: '60 seconds' })
+    var cpuTempArray = this.state.cpu;
+    var cpuTempKeyArray = this.state.cpuKey;
+    var cpuOverMax = (this.state.cpu.length - 60);
+    if (cpuOverMax > 1) {
+      cpuTempArray.splice(0, cpuOverMax);
+      cpuTempKeyArray.splice(0, cpuOverMax);
+    } else {
+      cpuTempArray.splice(0, 1);
+      cpuTempKeyArray.splice(0, 1);
+    }
+    this.setState({cpu: cpuTempArray });
+    this.setState({cpuKey: cpuTempKeyArray });
+
+  }
+  // Update CPU Chart Values showing the past hour
   viewCpuHour() {
+    this.setState({isCpuViewingHourOn: true });
     console.log("viewing hour data")
     this.setState({ cpuLabel: 'Past Hour' })
     axios.get(apiCpuHour)
@@ -203,7 +225,12 @@ export default class App extends Component {
         <div className="row">
           <div className="col-6">
             <div onClick={this.onClick}>Show CPU</div>
-            <Button handleOnClick={this.viewCpuHour} />
+            <button onClick={this.viewCpuHour} disabled={this.state.isCpuViewingHourOn}>
+              View hour
+            </button>
+            <button onClick={this.viewCpuMinute} disabled={!this.state.isCpuViewingHourOn}>
+              View minute
+            </button>
           </div>
         </div>
         <div className="row">
