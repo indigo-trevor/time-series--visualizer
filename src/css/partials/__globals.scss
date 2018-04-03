@@ -30,3 +30,35 @@ body {
     }
   }
 }
+
+.toggle-enter {
+  animation-name: fade-in;
+  animation-duration: 300ms;
+}
+.toggle-leave {
+  animation-name: fade-out;
+  animation-duration: 300ms;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0.0;
+    height: 0px;
+  }
+  to {
+    opacity: 1.0;
+    height: 20px;
+  }
+}
+
+
+@keyframes fade-out {
+  from {
+    opacity: 1.0;
+    height: 20px;
+  }
+  to {
+    opacity: 0.0;
+    height: 0px;
+  }
+}

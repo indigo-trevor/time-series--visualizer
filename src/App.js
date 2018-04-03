@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import {Line} from 'react-chartjs-2';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const apiCpuHeartbeat = '/cpu';
 const apiCpuHour = '/cpu/hour';
 
+// CPU Chart data
 const chartCpu = {
   labels: [0,1,2,3,4,5],
   datasets: [{
-    data: [0],
+    data: [0,0,0,0,0,0],
     backgroundColor: [
       'rgba(247,148,30,0.5)'
     ],
@@ -21,9 +23,13 @@ const chartCpu = {
   }]
 };
 
+// CPU Chart options
 const chartOptions = {
   legend: {
     display: false
+  },
+  legendCallback: function(chart) {
+    console.log(chart.data)
   },
   scales: {
     xAxes: [{
@@ -57,11 +63,31 @@ const chartOptions = {
   }
 };
 
+// Declaring button component that toggles the showing of Hour data
 const Button = (props) => (
   <button id="update-chart" onClick={props.handleOnClick}>View Hour Data</button>
 );
 
+// Css transition implementation that shows and hides Cpu chart
+class ToggleCpu extends React.Component {
+  render() {
+    return <ReactCSSTransitionGroup
+            component={CpuChart}
+            transitionName="toggle"
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {this.props.hidden ? null : <div className="col-6 chart-container chart-container--cpu">{this.props.children}</div>}
+      </ReactCSSTransitionGroup>
 
+  }
+}
+// Function that ensures only the Cpu component it shown and removes containing span element
+function CpuChart(props) {
+  const childrenArray = React.Children.toArray(props.children);
+  return childrenArray[0] || null;
+}
+
+// Main App component
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -73,12 +99,22 @@ export default class App extends Component {
       cpuHour: [],
       cpuKey: [],
       cpuViewingHour: false,
-      cpuLabel: '60 seconds'
+      cpuLabel: '60 seconds',
+      hidden:true
     }
+    this.onClick = this.onClick.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.viewCpuHour = this.viewCpuHour.bind(this);
   }
 
+  // On click, toggle display of Cpu Chart
+  onClick() {
+    this.setState((prevState, props) => ({
+      hidden: !(prevState.hidden)
+    }))
+  }
+
+  // On mount, initiate heartbeat call
   componentDidMount() {
     this.fetchCpuData()
   }
@@ -164,13 +200,14 @@ export default class App extends Component {
   render() {
     return(
       <div className="container">
-      <div className="row">
-        <div className="col-6">
-          <Button handleOnClick={this.viewCpuHour} />
-        </div>
-      </div>
         <div className="row">
           <div className="col-6">
+            <div onClick={this.onClick}>Show CPU</div>
+            <Button handleOnClick={this.viewCpuHour} />
+          </div>
+        </div>
+        <div className="row">
+          <ToggleCpu hidden={this.state.hidden}>
             <div className="chart-title-container">
               <h2>CPU</h2>
             </div>
@@ -183,7 +220,7 @@ export default class App extends Component {
               <p>{this.state.cpuLabel}</p>
               <p>0</p>
             </div>
-          </div>
+          </ToggleCpu>
         </div>
       </div>
     );
