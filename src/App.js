@@ -29,21 +29,22 @@ const chartOptions = {
     xAxes: [{
       display: true,
       gridLines: {
-        color: 'rgba(238,238,238,1)',
+        color: 'rgba(247,148,30,0.5)',
         lineWidth: 0.5,
-        zeroLineColor: 'rgba(238,238,238,1)'
+        zeroLineColor: 'rgba(247,148,30,0.5)'
       },
       ticks: {
         display: false,
+        steps: 6,
         maxTicksLimit: 6
       }
     }],
     yAxes: [{
       display: true,
       gridLines: {
-        color: 'rgba(238,238,238,1)',
+        color: 'rgba(247,148,30,0.5)',
         lineWidth: 0.5,
-        zeroLineColor: 'rgba(238,238,238,1)'
+        zeroLineColor: 'rgba(247,148,30,0.5)'
       },
       ticks: {
         display: false,
@@ -60,6 +61,7 @@ const Button = (props) => (
   <button id="update-chart" onClick={props.handleOnClick}>View Hour Data</button>
 );
 
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -68,9 +70,13 @@ export default class App extends Component {
       chartOptions:chartOptions,
       updated: false,
       cpu: [],
-      cpuKey: []
+      cpuHour: [],
+      cpuKey: [],
+      cpuViewingHour: false,
+      cpuLabel: '60 seconds'
     }
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.viewCpuHour = this.viewCpuHour.bind(this);
   }
 
   componentDidMount() {
@@ -84,28 +90,62 @@ export default class App extends Component {
         var cpuKey = [];
         var cpuResponse = res.data;
         var cpuCounter = new Date().toLocaleTimeString();
-        // Show latest 60 values only as there are 60 seconds in a minute :) (last time I checked)
-        if (this.state.cpu.length >= 60) {
+        // The below logic conditionally manipulates the data coming from the backend
+        if (this.state.cpu.length == 60) {
+          // For viewing minute data, restrict data array to 60
           var cpuTempArray = this.state.cpu;
           var cpuTempKeyArray = this.state.cpuKey;
           cpuTempArray.splice(0, 1);
           cpuTempKeyArray.splice(0, 1);
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
+        } else if (this.state.cpu.length >= 3600) {
+          // For viewing hour data, restrict data array to 3600
+          var cpuTempArray = this.state.cpu;
+          var cpuTempKeyArray = this.state.cpuKey;
+          var cpuOverMax = (this.state.cpu.length - 3600);
+          if (cpuOverMax > 1) {
+            cpuTempArray.splice(0, cpuOverMax);
+            cpuTempKeyArray.splice(0, cpuOverMax);
+          } else {
+            cpuTempArray.splice(0, 1);
+            cpuTempKeyArray.splice(0, 1);
+          }
+          this.setState({cpu: cpuTempArray });
+          this.setState({cpuKey: cpuTempKeyArray });
         } else {
           this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
           this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
         }
+        // Trigger chart data/options update function
         this.handleUpdate();
       });
   }
   // Update CPU Chart Values
   viewCpuHour() {
     console.log("viewing hour data")
+    this.setState({ cpuLabel: 'Past Hour' })
     axios.get(apiCpuHour)
     .then(res => {
       var cpuResponseHour = res.data;
-      console.log(cpuResponseHour)
+      var cpu = this.state.cpu;
+      var cpuKey = this.state.cpuKey;
+      for (var i = 0; i < cpuResponseHour.length; i++) {
+        var d = new Date();
+        var seconds = d.getSeconds()
+        d.setSeconds(seconds - i);
+        cpu.unshift(cpuResponseHour[i].percent)
+        cpuKey.unshift(d.toLocaleTimeString('en-US'))
+      }
+      this.setState({cpu: cpu });
+      this.setState({cpuKey: cpuKey });
+      var updatedChartData  = {};
+      updatedChartData = chartCpu;
+      updatedChartData.datasets[0].data = this.state.cpu
+      updatedChartData.labels = this.state.cpuKey
+      const chartData = updatedChartData;
+      // Set updated chart data state
+      this.setState({chartData, updated: !this.state.updated});
     });
   }
   // Update CPU Chart Values
@@ -140,7 +180,7 @@ export default class App extends Component {
             </div>
             <Line data={this.state.chartData} options={this.state.chartOptions}/>
             <div className="chart-label-container chart-label-container--bottom">
-              <p>60 seconds</p>
+              <p>{this.state.cpuLabel}</p>
               <p>0</p>
             </div>
           </div>
