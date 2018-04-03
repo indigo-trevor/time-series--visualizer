@@ -34,6 +34,7 @@ const chartOptions = {
       },
       ticks: {
         display: false,
+        maxTicksLimit: 6
       }
     }],
     yAxes: [{
@@ -83,8 +84,18 @@ export default class App extends Component {
         var cpuKey = [];
         var cpuResponse = res.data;
         var cpuCounter = new Date().toLocaleTimeString();
-        this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
-        this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
+        // Show latest 60 values only as there are 60 seconds in a minute :) (last time I checked)
+        if (this.state.cpu.length >= 60) {
+          var cpuTempArray = this.state.cpu;
+          var cpuTempKeyArray = this.state.cpuKey;
+          cpuTempArray.splice(0, 1);
+          cpuTempKeyArray.splice(0, 1);
+          this.setState({cpu: cpuTempArray });
+          this.setState({cpuKey: cpuTempKeyArray });
+        } else {
+          this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
+          this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
+        }
         this.handleUpdate();
       });
   }
@@ -95,10 +106,10 @@ export default class App extends Component {
     updatedChartData.datasets[0].data = this.state.cpu
     updatedChartData.labels = this.state.cpuKey
     const chartData = updatedChartData;
-    // Batching both updates to state in the same call to this.setState
+    // Set updated chart data state
     this.setState({chartData,  updated: !this.state.updated});
-    // for updated, read from what is currently set as updated in state and do the opposite - creating a toggle
-    setTimeout(function() { this.fetchCpuData(); }.bind(this), 2000);
+    // Trigger fetchCpuData function every second
+    setTimeout(function() { this.fetchCpuData(); }.bind(this), 1000);
   }
 
 
@@ -106,9 +117,19 @@ export default class App extends Component {
     return(
       <div className="container">
         <div className="row">
-          <div className="col-12">
+          <div className="col-6">
+            <div className="chart-title-container">
+              <h2>CPU</h2>
+            </div>
+            <div className="chart-label-container chart-label-container--top">
+              <p>% utilization </p>
+              <p>100%</p>
+            </div>
             <Line data={this.state.chartData} options={this.state.chartOptions}/>
-            <Button handleOnClick={this.handleUpdate} />
+            <div className="chart-label-container chart-label-container--bottom">
+              <p>60 seconds</p>
+              <p>0</p>
+            </div>
           </div>
         </div>
       </div>

@@ -30,7 +30,7 @@ func main() {
 	m.Get("/cpu", func(w, ctx *macaron.Context) {
 		localCpu := Cpu{
 			Id: 1,
-			Percent:  rand.Intn(25),
+			Percent:  rand.Intn(15),
 		}
 
 		ctx.JSON(200, &localCpu)
