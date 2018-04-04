@@ -1,3 +1,13 @@
+// Filter component
+.filter {
+  .type-filter {
+    
+  }
+  .time-filter {
+
+  }
+}
+// Chart component
 .chart {
   position: relative;
   float: left;
@@ -50,5 +60,12 @@
   }
   &:first-child {
     margin-right: 4%;
+  }
+  &:nth-child(3) {
+    margin-top: 4%;
+  }
+  &:nth-child(4) {
+    margin-top: 4%;
+    margin-left: 4%;
   }
 }
