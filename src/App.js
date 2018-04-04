@@ -182,7 +182,7 @@ class ToggleCpu extends React.Component {
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
-            {this.props.hiddenCpu ? null : <div className="col-6 chart-container chart-container--cpu">{this.props.children}</div>}
+            {this.props.hiddenCpu ? null : <div className="chart chart--cpu">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
 
   }
@@ -196,7 +196,7 @@ class ToggleMemory extends React.Component {
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
-            {this.props.hiddenMemory ? null : <div className="col-6 chart-container chart-container--memory">{this.props.children}</div>}
+            {this.props.hiddenMemory ? null : <div className="chart chart--memory">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
 
   }
@@ -210,7 +210,7 @@ class ToggleWifi extends React.Component {
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
-            {this.props.hiddenWifi ? null : <div className="col-6 chart-container chart-container--wifi">{this.props.children}</div>}
+            {this.props.hiddenWifi ? null : <div className="chart chart--wifi">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
 
   }
@@ -485,65 +485,68 @@ export default class App extends Component {
 
   render() {
     return(
-      <div className="container">
-        <div className="row">
-          <div className="col-6">
-            <div onClick={this.onClickCpu}>Show CPU</div>
-            <div onClick={this.onClickMemory}>Show Memory</div>
-            <div onClick={this.onClickWifi}>Show Wifi</div>
-            <button onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
-              View hour
-            </button>
-            <button onClick={this.viewMinuteData} disabled={!this.state.isViewingHourOn}>
-              View minute
-            </button>
+      <div className="app-container">
+        <section className="section section--sub-nav">
+          <div className="section-inner">
+            <div className="sub-nav">
+              <div onClick={this.onClickCpu}>Show CPU</div>
+              <div onClick={this.onClickMemory}>Show Memory</div>
+              <div onClick={this.onClickWifi}>Show Wifi</div>
+              <button onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
+                View hour
+              </button>
+              <button onClick={this.viewMinuteData} disabled={!this.state.isViewingHourOn}>
+                View minute
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="row">
-          <ToggleCpu hiddenCpu={this.state.hiddenCpu}>
-            <div className="chart-title-container">
-              <h2>CPU</h2>
-            </div>
-            <div className="chart-label-container chart-label-container--top">
-              <p>% utilization </p>
-              <p>100%</p>
-            </div>
-            <Line data={this.state.chartDataCpu} options={this.state.chartOptionsCpu}/>
-            <div className="chart-label-container chart-label-container--bottom">
-              <p>{this.state.chartLabel}</p>
-              <p>0</p>
-            </div>
-          </ToggleCpu>
-          <ToggleMemory hiddenMemory={this.state.hiddenMemory}>
-            <div className="chart-title-container">
-              <h2>Memory</h2>
-            </div>
-            <div className="chart-label-container chart-label-container--top">
-              <p>Memory usage </p>
-              <p>17 GB</p>
-            </div>
-            <Line data={this.state.chartDataMemory} options={this.state.chartOptionsMemory}/>
-            <div className="chart-label-container chart-label-container--bottom">
-              <p>{this.state.chartLabel}</p>
-              <p>0</p>
-            </div>
-          </ToggleMemory>
-          <div class="w-100"></div>
-          <ToggleWifi hiddenWifi={this.state.hiddenWifi}>
-            <div className="chart-title-container">
-              <h2>Wi-Fi</h2>
-            </div>
-            <div className="chart-label-container chart-label-container--top">
-              <p>Throughput</p>
-              <p>100 Kbps</p>
-            </div>
-            <Line data={this.state.chartDataWifi} options={this.state.chartOptionsWifi}/>
-            <div className="chart-label-container chart-label-container--bottom">
-              <p>{this.state.chartLabel}</p>
-              <p>0</p>
-            </div>
-          </ToggleWifi>
-        </div>
+        </section>
+        <section className="section section--charts">
+          <div className="section-inner">
+            <ToggleCpu hiddenCpu={this.state.hiddenCpu}>
+              <div className="chart-title-container">
+                <h2>CPU</h2>
+              </div>
+              <div className="chart-label-container chart-label-container--top">
+                <p>% utilization </p>
+                <p>100%</p>
+              </div>
+              <Line data={this.state.chartDataCpu} options={this.state.chartOptionsCpu}/>
+              <div className="chart-label-container chart-label-container--bottom">
+                <p>{this.state.chartLabel}</p>
+                <p>0</p>
+              </div>
+            </ToggleCpu>
+            <ToggleMemory hiddenMemory={this.state.hiddenMemory}>
+              <div className="chart-title-container">
+                <h2>Memory</h2>
+              </div>
+              <div className="chart-label-container chart-label-container--top">
+                <p>Memory usage </p>
+                <p>17 GB</p>
+              </div>
+              <Line data={this.state.chartDataMemory} options={this.state.chartOptionsMemory}/>
+              <div className="chart-label-container chart-label-container--bottom">
+                <p>{this.state.chartLabel}</p>
+                <p>0</p>
+              </div>
+            </ToggleMemory>
+            <ToggleWifi hiddenWifi={this.state.hiddenWifi}>
+              <div className="chart-title-container">
+                <h2>Wi-Fi</h2>
+              </div>
+              <div className="chart-label-container chart-label-container--top">
+                <p>Throughput</p>
+                <p>100 Kbps</p>
+              </div>
+              <Line data={this.state.chartDataWifi} options={this.state.chartOptionsWifi}/>
+              <div className="chart-label-container chart-label-container--bottom">
+                <p>{this.state.chartLabel}</p>
+                <p>0</p>
+              </div>
+            </ToggleWifi>
+          </div>
+        </section>
       </div>
     );
   }

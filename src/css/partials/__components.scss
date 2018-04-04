@@ -1,0 +1,54 @@
+.chart {
+  position: relative;
+  float: left;
+  width: 48%;
+  &--cpu {
+
+  }
+  &--memory {
+
+  }
+  &--wifi {
+
+  }
+  .chart-title-container {
+    position: relative;
+    float: left;
+    width: 100%;
+    h2 {
+
+    }
+  }
+  .chart-label-container {
+    position: relative;
+    float: left;
+    width: 100%;
+    &--top {
+      margin-bottom: 5px;
+    }
+    &--bottom {
+      top: -2px;
+    }
+    p {
+      position: relative;
+      margin: 0px 0px;
+      float: left;
+      color: $grey;
+      font-size: 0.9em;
+      &:last-child {
+        float: right;
+      }
+    }
+  }
+  &.toggle-enter {
+    animation-name: fade-in;
+    animation-duration: 300ms;
+  }
+  &.toggle-leave {
+    animation-name: fade-out;
+    animation-duration: 300ms;
+  }
+  &:first-child {
+    margin-right: 4%;
+  }
+}

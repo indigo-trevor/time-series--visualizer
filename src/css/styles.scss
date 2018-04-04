@@ -2,5 +2,7 @@
 @import "partials/__mixins.scss";          // Mixins
 @import "partials/__variables.scss";       // Global Variables
 @import "partials/__typography.scss";      // Typography
-@import "partials/__grid.scss";            // Bootstrap grid partial
+@import "partials/__layouts.scss";         // Layout styling
+@import "partials/__components.scss";      // Component styling
+@import "partials/__animations.scss";      // Keyframe animations
 @import "partials/__globals.scss";         // Global styling
