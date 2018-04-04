@@ -3,8 +3,12 @@ import axios from 'axios';
 import {Line} from 'react-chartjs-2';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-const apiCpuHeartbeat = '/cpu';
-const apiCpuHour = '/cpu/hour';
+const apiHeartbeat = '/heartbeat';
+const apiHour = '/hour';
+const cpuColor = 'rgba(17,125,187,1)';
+const cpuColorDimmed = 'rgba(17,125,187,0.5)';
+const memoryColor = 'rgba(139,18,174,1)';
+const memoryColorDimmed = 'rgba(139,18,174,0.5)';
 
 // CPU Chart data
 const chartCpu = {
@@ -12,19 +16,36 @@ const chartCpu = {
   datasets: [{
     data: [0,0,0,0,0,0],
     backgroundColor: [
-      'rgba(247,148,30,0.5)'
+      cpuColorDimmed
     ],
     pointRadius: 0,
     lineTension: 0,
     borderWidth: 1,
-    borderColor: 'rgba(247,148,30,1)',
-    pointBorderColor: 'rgba(247,148,30,1)',
-    pointBackgroundColor: 'rgba(247,148,30,0.5)'
+    borderColor: cpuColor,
+    pointBorderColor: cpuColor,
+    pointBackgroundColor: cpuColorDimmed
+  }]
+};
+
+// Memory Chart data
+const chartMemory = {
+  labels: [0,1,2,3,4,5],
+  datasets: [{
+    data: [0,0,0,0,0,0],
+    backgroundColor: [
+      memoryColorDimmed
+    ],
+    pointRadius: 0,
+    lineTension: 0,
+    borderWidth: 1,
+    borderColor: memoryColor,
+    pointBorderColor: memoryColor,
+    pointBackgroundColor: memoryColorDimmed
   }]
 };
 
 // CPU Chart options
-const chartOptions = {
+const chartOptionsCpu = {
   legend: {
     display: false
   },
@@ -35,38 +56,73 @@ const chartOptions = {
     xAxes: [{
       display: true,
       gridLines: {
-        color: 'rgba(247,148,30,0.5)',
+        color: cpuColorDimmed,
         lineWidth: 0.5,
-        zeroLineColor: 'rgba(247,148,30,0.5)'
+        zeroLineColor: cpuColorDimmed
       },
       ticks: {
         display: false,
-        steps: 6,
-        maxTicksLimit: 6
+        steps: 10,
+        maxTicksLimit: 10
       }
     }],
     yAxes: [{
       display: true,
       gridLines: {
-        color: 'rgba(247,148,30,0.5)',
+        color: cpuColorDimmed,
         lineWidth: 0.5,
-        zeroLineColor: 'rgba(247,148,30,0.5)'
+        zeroLineColor: cpuColorDimmed
       },
       ticks: {
         display: false,
         beginAtZero: true,
         steps: 10,
-        stepValue: 5,
+        stepValue: 10,
         max: 100
       }
     }]
   }
 };
 
-// Declaring button component that toggles the showing of Hour data
-const Button = (props) => (
-  <button id="update-chart" onClick={props.handleOnClick}>View Hour Data</button>
-);
+// Memory Chart options
+const chartOptionsMemory = {
+  legend: {
+    display: false
+  },
+  legendCallback: function(chart) {
+    console.log(chart.data)
+  },
+  scales: {
+    xAxes: [{
+      display: true,
+      gridLines: {
+        color: memoryColorDimmed,
+        lineWidth: 0.5,
+        zeroLineColor: memoryColorDimmed
+      },
+      ticks: {
+        display: false,
+        steps: 10,
+        maxTicksLimit: 10
+      }
+    }],
+    yAxes: [{
+      display: true,
+      gridLines: {
+        color: memoryColorDimmed,
+        lineWidth: 0.5,
+        zeroLineColor: memoryColorDimmed
+      },
+      ticks: {
+        display: false,
+        beginAtZero: true,
+        steps: 10,
+        stepValue: 1.7,
+        max: 17
+      }
+    }]
+  }
+};
 
 // Css transition implementation that shows and hides Cpu chart
 class ToggleCpu extends React.Component {
@@ -76,13 +132,34 @@ class ToggleCpu extends React.Component {
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
-            {this.props.hidden ? null : <div className="col-6 chart-container chart-container--cpu">{this.props.children}</div>}
+            {this.props.hiddenCpu ? null : <div className="col-6 chart-container chart-container--cpu">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
 
   }
 }
+
+// Css transition implementation that shows and hides Memory chart
+class ToggleMemory extends React.Component {
+  render() {
+    return <ReactCSSTransitionGroup
+            component={MemoryChart}
+            transitionName="toggle"
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {this.props.hiddenMemory ? null : <div className="col-6 chart-container chart-container--memory">{this.props.children}</div>}
+      </ReactCSSTransitionGroup>
+
+  }
+}
+
 // Function that ensures only the Cpu component it shown and removes containing span element
 function CpuChart(props) {
+  const childrenArray = React.Children.toArray(props.children);
+  return childrenArray[0] || null;
+}
+
+// Function that ensures only the Memory component it shown and removes containing span element
+function MemoryChart(props) {
   const childrenArray = React.Children.toArray(props.children);
   return childrenArray[0] || null;
 }
@@ -92,131 +169,192 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chartData: chartCpu,
-      chartOptions:chartOptions,
+      chartDataCpu: chartCpu,
+      chartDataMemory: chartMemory,
+      chartOptionsCpu: chartOptionsCpu,
+      chartOptionsMemory: chartOptionsMemory,
       updated: false,
       cpu: [],
-      cpuHour: [],
       cpuKey: [],
+      memory: [],
+      memoryKey: [],
       cpuViewingHour: false,
-      cpuLabel: '60 seconds',
-      hidden:true,
-      isCpuViewingHourOn: false
+      chartLabel: '60 seconds',
+      hiddenCpu:true,
+      hiddenMemory:true,
+      isViewingHourOn: false
     }
-    this.onClick = this.onClick.bind(this);
+    this.onClickCpu = this.onClickCpu.bind(this);
+    this.onClickMemory = this.onClickMemory.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
-    this.viewCpuHour = this.viewCpuHour.bind(this);
-    this.viewCpuMinute = this.viewCpuMinute.bind(this);
+    this.viewHourData = this.viewHourData.bind(this);
+    this.viewMinuteData = this.viewMinuteData.bind(this);
   }
 
   // On click, toggle display of Cpu Chart
-  onClick() {
+  onClickCpu() {
     this.setState((prevState, props) => ({
-      hidden: !(prevState.hidden)
+      hiddenCpu: !(prevState.hiddenCpu)
+    }))
+  }
+
+  // On click, toggle display of Memory Chart
+  onClickMemory() {
+    this.setState((prevState, props) => ({
+      hiddenMemory: !(prevState.hiddenMemory)
     }))
   }
 
   // On mount, initiate heartbeat call
   componentDidMount() {
-    this.fetchCpuData()
+    this.fetchHeartbeatData()
   }
 
-  fetchCpuData() {
-    axios.get(apiCpuHeartbeat)
+  fetchHeartbeatData() {
+    axios.get(apiHeartbeat)
       .then(res => {
         var cpu = [];
         var cpuKey = [];
-        var cpuResponse = res.data;
-        var cpuCounter = new Date().toLocaleTimeString();
+        var memory = [];
+        var memoryKey = [];
+        var heartbeatResponse = res.data;
+        var heartbeatCounter = new Date().toLocaleTimeString();
+        // Converting Memory data down
+        heartbeatResponse.MemoryGb = (heartbeatResponse.MemoryGb * .1);
+        console.log(heartbeatResponse.MemoryGb);
         // The below logic conditionally manipulates the data coming from the backend
         if (this.state.cpu.length == 60) {
           // For viewing minute data, restrict data array to 60
           var cpuTempArray = this.state.cpu;
           var cpuTempKeyArray = this.state.cpuKey;
+          var memoryTempArray = this.state.memory;
+          var memoryTempKeyArray = this.state.memoryKey;
           cpuTempArray.splice(0, 1);
           cpuTempKeyArray.splice(0, 1);
+          memoryTempArray.splice(0, 1);
+          memoryTempKeyArray.splice(0, 1);
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
+          this.setState({memory: memoryTempArray });
+          this.setState({memoryKey: memoryTempKeyArray });
         } else if (this.state.cpu.length >= 3600) {
           // For viewing hour data, restrict data array to 3600
           var cpuTempArray = this.state.cpu;
           var cpuTempKeyArray = this.state.cpuKey;
+          var memoryTempArray = this.state.memory;
+          var memoryTempKeyArray = this.state.memoryKey;
           var cpuOverMax = (this.state.cpu.length - 3600);
+          var memoryOverMax = (this.state.memory.length - 3600);
           if (cpuOverMax > 1) {
             cpuTempArray.splice(0, cpuOverMax);
             cpuTempKeyArray.splice(0, cpuOverMax);
-          } else {
+            memoryTempArray.splice(0, memoryOverMax);
+            memoryTempKeyArray.splice(0, memoryOverMax);
+          } else{
             cpuTempArray.splice(0, 1);
             cpuTempKeyArray.splice(0, 1);
+            memoryTempArray.splice(0, 1);
+            memoryTempKeyArray.splice(0, 1);
           }
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
+          this.setState({memory: memoryTempArray });
+          this.setState({memoryKey: memoryTempKeyArray });
         } else {
-          this.setState({ cpu: this.state.cpu.concat(cpuResponse.percent) })
-          this.setState({ cpuKey: this.state.cpuKey.concat(cpuCounter) })
+          this.setState({ cpu: this.state.cpu.concat(heartbeatResponse.CpuPercent) })
+          this.setState({ cpuKey: this.state.cpuKey.concat(heartbeatCounter) })
+          this.setState({ memory: this.state.memory.concat(heartbeatResponse.MemoryGb) })
+          this.setState({ memoryKey: this.state.memoryKey.concat(heartbeatCounter) })
         }
         // Trigger chart data/options update function
         this.handleUpdate();
       });
   }
   // Update CPU Chart Values showing the past minute
-  viewCpuMinute() {
-    this.setState({isCpuViewingHourOn: false });
+  viewMinuteData() {
+    this.setState({isViewingHourOn: false });
     console.log("viewing minute data")
-    this.setState({ cpuLabel: '60 seconds' })
+    this.setState({ chartLabel: '60 seconds' })
     var cpuTempArray = this.state.cpu;
     var cpuTempKeyArray = this.state.cpuKey;
+    var memoryTempArray = this.state.memory;
+    var memoryTempKeyArray = this.state.memoryKey;
     var cpuOverMax = (this.state.cpu.length - 60);
+    var memoryOverMax = (this.state.memory.length - 60);
     if (cpuOverMax > 1) {
       cpuTempArray.splice(0, cpuOverMax);
       cpuTempKeyArray.splice(0, cpuOverMax);
+      memoryTempArray.splice(0, memoryOverMax);
+      memoryTempKeyArray.splice(0, memoryOverMax);
     } else {
       cpuTempArray.splice(0, 1);
       cpuTempKeyArray.splice(0, 1);
+      memoryTempArray.splice(0, 1);
+      memoryTempKeyArray.splice(0, 1);
     }
     this.setState({cpu: cpuTempArray });
     this.setState({cpuKey: cpuTempKeyArray });
-
+    this.setState({memory: memoryTempArray });
+    this.setState({memoryKey: memoryTempKeyArray });
   }
+
   // Update CPU Chart Values showing the past hour
-  viewCpuHour() {
-    this.setState({isCpuViewingHourOn: true });
+  viewHourData() {
+    this.setState({isViewingHourOn: true });
     console.log("viewing hour data")
-    this.setState({ cpuLabel: 'Past Hour' })
-    axios.get(apiCpuHour)
+    this.setState({ chartLabel: 'Past Hour' })
+    axios.get(apiHour)
     .then(res => {
-      var cpuResponseHour = res.data;
+      var hourResponse = res.data;
       var cpu = this.state.cpu;
       var cpuKey = this.state.cpuKey;
-      for (var i = 0; i < cpuResponseHour.length; i++) {
+      var memory = this.state.memory;
+      var memoryKey = this.state.memoryKey;
+      for (var i = 0; i < hourResponse.length; i++) {
         var d = new Date();
         var seconds = d.getSeconds()
+        hourResponse[i].MemoryGb = (hourResponse[i].MemoryGb * .1);
         d.setSeconds(seconds - i);
-        cpu.unshift(cpuResponseHour[i].percent)
+        cpu.unshift(hourResponse[i].CpuPercent)
+        memory.unshift(hourResponse[i].MemoryGb)
         cpuKey.unshift(d.toLocaleTimeString('en-US'))
+        memoryKey.unshift(d.toLocaleTimeString('en-US'))
       }
       this.setState({cpu: cpu });
       this.setState({cpuKey: cpuKey });
-      var updatedChartData  = {};
-      updatedChartData = chartCpu;
-      updatedChartData.datasets[0].data = this.state.cpu
-      updatedChartData.labels = this.state.cpuKey
-      const chartData = updatedChartData;
+      this.setState({memory: memory });
+      this.setState({memoryKey: memoryKey });
+      var updatedDataCpu  = {};
+      var updatedDataMemory  = {};
+      updatedDataCpu = chartCpu;
+      updatedDataMemory = chartMemory;
+      updatedDataCpu.datasets[0].data = this.state.cpu;
+      updatedDataMemory.datasets[0].data = this.state.memory;
+      updatedDataCpu.labels = this.state.cpuKey;
+      updatedDataMemory.labels = this.state.memoryKey;
+      const chartDataCpu = updatedDataCpu;
+      const chartDataMemory = updatedDataMemory;
       // Set updated chart data state
-      this.setState({chartData, updated: !this.state.updated});
+      this.setState({chartDataCpu, chartDataMemory, updated: !this.state.updated});
     });
   }
-  // Update CPU Chart Values
+
+  // Update chart
   handleUpdate() {
-    var updatedChartData  = {};
-    updatedChartData = chartCpu;
-    updatedChartData.datasets[0].data = this.state.cpu
-    updatedChartData.labels = this.state.cpuKey
-    const chartData = updatedChartData;
+    var updatedDataCpu  = {};
+    var updatedDataMemory  = {};
+    updatedDataCpu = chartCpu;
+    updatedDataMemory = chartMemory;
+    updatedDataCpu.datasets[0].data = this.state.cpu;
+    updatedDataMemory.datasets[0].data = this.state.memory;
+    updatedDataCpu.labels = this.state.cpuKey;
+    updatedDataMemory.labels = this.state.memoryKey;
+    const chartDataCpu = updatedDataCpu;
+    const chartDataMemory = updatedDataMemory;
     // Set updated chart data state
-    this.setState({chartData,  updated: !this.state.updated});
-    // Trigger fetchCpuData function every second
-    setTimeout(function() { this.fetchCpuData(); }.bind(this), 1000);
+    this.setState({chartDataCpu, chartDataMemory, updated: !this.state.updated});
+    // Trigger fetchHeartbeatData function every second
+    setTimeout(function() { this.fetchHeartbeatData(); }.bind(this), 1000);
   }
 
   render() {
@@ -224,17 +362,18 @@ export default class App extends Component {
       <div className="container">
         <div className="row">
           <div className="col-6">
-            <div onClick={this.onClick}>Show CPU</div>
-            <button onClick={this.viewCpuHour} disabled={this.state.isCpuViewingHourOn}>
+            <div onClick={this.onClickCpu}>Show CPU</div>
+            <div onClick={this.onClickMemory}>Show Memory</div>
+            <button onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
               View hour
             </button>
-            <button onClick={this.viewCpuMinute} disabled={!this.state.isCpuViewingHourOn}>
+            <button onClick={this.viewMinuteData} disabled={!this.state.isViewingHourOn}>
               View minute
             </button>
           </div>
         </div>
         <div className="row">
-          <ToggleCpu hidden={this.state.hidden}>
+          <ToggleCpu hiddenCpu={this.state.hiddenCpu}>
             <div className="chart-title-container">
               <h2>CPU</h2>
             </div>
@@ -242,12 +381,26 @@ export default class App extends Component {
               <p>% utilization </p>
               <p>100%</p>
             </div>
-            <Line data={this.state.chartData} options={this.state.chartOptions}/>
+            <Line data={this.state.chartDataCpu} options={this.state.chartOptionsCpu}/>
             <div className="chart-label-container chart-label-container--bottom">
-              <p>{this.state.cpuLabel}</p>
+              <p>{this.state.chartLabel}</p>
               <p>0</p>
             </div>
           </ToggleCpu>
+          <ToggleMemory hiddenMemory={this.state.hiddenMemory}>
+            <div className="chart-title-container">
+              <h2>Memory</h2>
+            </div>
+            <div className="chart-label-container chart-label-container--top">
+              <p>Memory usage </p>
+              <p>17 GB</p>
+            </div>
+            <Line data={this.state.chartDataMemory} options={this.state.chartOptionsMemory}/>
+            <div className="chart-label-container chart-label-container--bottom">
+              <p>{this.state.chartLabel}</p>
+              <p>0</p>
+            </div>
+          </ToggleMemory>
         </div>
       </div>
     );

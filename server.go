@@ -13,10 +13,17 @@ import (
 	"gopkg.in/macaron.v1"
 )
 
-// Declaring CPU data
-type Cpu struct {
-	Id      int `json:"id"`
-	Percent int `json:"percent"`
+// Declaring Hour data
+type HourData struct {
+	CpuPercent int `json:"CpuPercent"`
+	MemoryGb 	 int `json:"MemoryGb"`
+	WiFi 			 int `json:"WiFi"`
+}
+
+// Declaring Heartbeat data
+type Heartbeat struct {
+	CpuPercent int `json:"CpuPercent"`
+	MemoryGb 	 int `json:"MemoryGb"`
 }
 
 // Main Go function
@@ -29,20 +36,20 @@ func main() {
 	m.Get("/*", func(ctx *macaron.Context) {
 		ctx.HTML(200, "homepage", nil)
 	})
-	// For CPU hour data endpoint
-	cpusHour := getCpusHour()
-	m.Get("/cpu/hour", func(ctx *macaron.Context) {
-		cpuHour := cpusHour
-		ctx.JSON(200, &cpuHour)
+	// Creates hour data endpoint
+	dataHour := getHourData()
+	m.Get("/hour", func(ctx *macaron.Context) {
+		localHourData := dataHour
+		ctx.JSON(200, &localHourData)
 	})
 	// Creates endpoint for CPU heartbeat data
-	m.Get("/cpu", func(w, ctx *macaron.Context) {
-		localCpu := Cpu{
-			Id: 1,
-			Percent:  rand.Intn(15),
+	m.Get("/heartbeat", func(w, ctx *macaron.Context) {
+		localHeartbeatData := Heartbeat{
+			CpuPercent:  rand.Intn(15),
+			MemoryGb: random(60, 75),
 		}
 
-		ctx.JSON(200, &localCpu)
+		ctx.JSON(200, &localHeartbeatData)
 	})
 
 	m.Use(macaron.Static("dist"))
@@ -57,14 +64,18 @@ func main() {
 	}
 }
 
+// Function that generates a random number within a range
+func random(min int, max int) int {
+  return rand.Intn(max-min) + min
+}
 // Function that parses in cpu--hour.json file
-func getCpusHour() []Cpu {
-	raw, err := ioutil.ReadFile("./cpu--hour.json")
+func getHourData() []HourData {
+	raw, err := ioutil.ReadFile("./data--hour.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	var c []Cpu
+	var c []HourData
 	json.Unmarshal(raw, &c)
 	return c
 }
