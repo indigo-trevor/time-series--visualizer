@@ -9,6 +9,8 @@ const cpuColor = 'rgba(17,125,187,1)';
 const cpuColorDimmed = 'rgba(17,125,187,0.5)';
 const memoryColor = 'rgba(139,18,174,1)';
 const memoryColorDimmed = 'rgba(139,18,174,0.5)';
+const wifiColor = 'rgba(167,79,1,1)';
+const wifiColorDimmed = 'rgba(167,79,1,0.5)';
 
 // CPU Chart data
 const chartCpu = {
@@ -44,13 +46,27 @@ const chartMemory = {
   }]
 };
 
+// Wifi Chart data
+const chartWifi = {
+  labels: [0,1,2,3,4,5],
+  datasets: [{
+    data: [0,0,0,0,0,0],
+    backgroundColor: [
+      wifiColorDimmed
+    ],
+    pointRadius: 0,
+    lineTension: 0,
+    borderWidth: 1,
+    borderColor: wifiColor,
+    pointBorderColor: wifiColor,
+    pointBackgroundColor: wifiColorDimmed
+  }]
+};
+
 // CPU Chart options
 const chartOptionsCpu = {
   legend: {
     display: false
-  },
-  legendCallback: function(chart) {
-    console.log(chart.data)
   },
   scales: {
     xAxes: [{
@@ -89,9 +105,6 @@ const chartOptionsMemory = {
   legend: {
     display: false
   },
-  legendCallback: function(chart) {
-    console.log(chart.data)
-  },
   scales: {
     xAxes: [{
       display: true,
@@ -119,6 +132,43 @@ const chartOptionsMemory = {
         steps: 10,
         stepValue: 1.7,
         max: 17
+      }
+    }]
+  }
+};
+
+// Wifi Chart options
+const chartOptionsWifi = {
+  legend: {
+    display: false
+  },
+  scales: {
+    xAxes: [{
+      display: true,
+      gridLines: {
+        color: wifiColorDimmed,
+        lineWidth: 0.5,
+        zeroLineColor: wifiColorDimmed
+      },
+      ticks: {
+        display: false,
+        steps: 10,
+        maxTicksLimit: 10
+      }
+    }],
+    yAxes: [{
+      display: true,
+      gridLines: {
+        color: wifiColorDimmed,
+        lineWidth: 0.5,
+        zeroLineColor: wifiColorDimmed
+      },
+      ticks: {
+        display: false,
+        beginAtZero: true,
+        steps: 10,
+        stepValue: 10,
+        max: 100
       }
     }]
   }
@@ -152,6 +202,20 @@ class ToggleMemory extends React.Component {
   }
 }
 
+// Css transition implementation that shows and hides Wifi chart
+class ToggleWifi extends React.Component {
+  render() {
+    return <ReactCSSTransitionGroup
+            component={WifiChart}
+            transitionName="toggle"
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {this.props.hiddenWifi ? null : <div className="col-6 chart-container chart-container--wifi">{this.props.children}</div>}
+      </ReactCSSTransitionGroup>
+
+  }
+}
+
 // Function that ensures only the Cpu component it shown and removes containing span element
 function CpuChart(props) {
   const childrenArray = React.Children.toArray(props.children);
@@ -164,6 +228,12 @@ function MemoryChart(props) {
   return childrenArray[0] || null;
 }
 
+// Function that ensures only the Wifi component it shown and removes containing span element
+function WifiChart(props) {
+  const childrenArray = React.Children.toArray(props.children);
+  return childrenArray[0] || null;
+}
+
 // Main App component
 export default class App extends Component {
   constructor(props) {
@@ -171,21 +241,26 @@ export default class App extends Component {
     this.state = {
       chartDataCpu: chartCpu,
       chartDataMemory: chartMemory,
+      chartDataWifi: chartWifi,
       chartOptionsCpu: chartOptionsCpu,
       chartOptionsMemory: chartOptionsMemory,
+      chartOptionsWifi: chartOptionsWifi,
       updated: false,
       cpu: [],
       cpuKey: [],
       memory: [],
       memoryKey: [],
-      cpuViewingHour: false,
+      wifi: [],
+      wifiKey: [],
       chartLabel: '60 seconds',
       hiddenCpu:true,
       hiddenMemory:true,
+      hiddenWifi:true,
       isViewingHourOn: false
     }
     this.onClickCpu = this.onClickCpu.bind(this);
     this.onClickMemory = this.onClickMemory.bind(this);
+    this.onClickWifi = this.onClickWifi.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.viewHourData = this.viewHourData.bind(this);
     this.viewMinuteData = this.viewMinuteData.bind(this);
@@ -205,6 +280,13 @@ export default class App extends Component {
     }))
   }
 
+  // On click, toggle display of Wifi Chart
+  onClickWifi() {
+    this.setState((prevState, props) => ({
+      hiddenWifi: !(prevState.hiddenWifi)
+    }))
+  }
+
   // On mount, initiate heartbeat call
   componentDidMount() {
     this.fetchHeartbeatData()
@@ -217,11 +299,12 @@ export default class App extends Component {
         var cpuKey = [];
         var memory = [];
         var memoryKey = [];
+        var wifi = [];
+        var wifiKey = [];
         var heartbeatResponse = res.data;
         var heartbeatCounter = new Date().toLocaleTimeString();
-        // Converting Memory data down
+        // Converting Memory data down one decimal
         heartbeatResponse.MemoryGb = (heartbeatResponse.MemoryGb * .1);
-        console.log(heartbeatResponse.MemoryGb);
         // The below logic conditionally manipulates the data coming from the backend
         if (this.state.cpu.length == 60) {
           // For viewing minute data, restrict data array to 60
@@ -229,42 +312,59 @@ export default class App extends Component {
           var cpuTempKeyArray = this.state.cpuKey;
           var memoryTempArray = this.state.memory;
           var memoryTempKeyArray = this.state.memoryKey;
+          var wifiTempArray = this.state.wifi;
+          var wifiTempKeyArray = this.state.wifiKey;
           cpuTempArray.splice(0, 1);
           cpuTempKeyArray.splice(0, 1);
           memoryTempArray.splice(0, 1);
           memoryTempKeyArray.splice(0, 1);
+          wifiTempArray.splice(0, 1);
+          wifiTempKeyArray.splice(0, 1);
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
           this.setState({memory: memoryTempArray });
           this.setState({memoryKey: memoryTempKeyArray });
+          this.setState({wifi: wifiTempArray });
+          this.setState({wifiKey: wifiTempKeyArray });
         } else if (this.state.cpu.length >= 3600) {
           // For viewing hour data, restrict data array to 3600
           var cpuTempArray = this.state.cpu;
           var cpuTempKeyArray = this.state.cpuKey;
           var memoryTempArray = this.state.memory;
           var memoryTempKeyArray = this.state.memoryKey;
+          var wifiTempArray = this.state.wifi;
+          var wifiTempKeyArray = this.state.wifiKey;
           var cpuOverMax = (this.state.cpu.length - 3600);
           var memoryOverMax = (this.state.memory.length - 3600);
+          var wifiOverMax = (this.state.wifi.length - 3600);
           if (cpuOverMax > 1) {
             cpuTempArray.splice(0, cpuOverMax);
             cpuTempKeyArray.splice(0, cpuOverMax);
             memoryTempArray.splice(0, memoryOverMax);
             memoryTempKeyArray.splice(0, memoryOverMax);
+            wifiTempArray.splice(0, wifiOverMax);
+            wifiTempKeyArray.splice(0, wifiOverMax);
           } else{
             cpuTempArray.splice(0, 1);
             cpuTempKeyArray.splice(0, 1);
             memoryTempArray.splice(0, 1);
             memoryTempKeyArray.splice(0, 1);
+            wifiTempArray.splice(0, 1);
+            wifiTempKeyArray.splice(0, 1);
           }
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
           this.setState({memory: memoryTempArray });
           this.setState({memoryKey: memoryTempKeyArray });
+          this.setState({wifi: wifiTempArray });
+          this.setState({wifiKey: wifiTempKeyArray });
         } else {
           this.setState({ cpu: this.state.cpu.concat(heartbeatResponse.CpuPercent) })
           this.setState({ cpuKey: this.state.cpuKey.concat(heartbeatCounter) })
           this.setState({ memory: this.state.memory.concat(heartbeatResponse.MemoryGb) })
           this.setState({ memoryKey: this.state.memoryKey.concat(heartbeatCounter) })
+          this.setState({ wifi: this.state.wifi.concat(heartbeatResponse.WiFi) })
+          this.setState({ wifiKey: this.state.wifiKey.concat(heartbeatCounter) })
         }
         // Trigger chart data/options update function
         this.handleUpdate();
@@ -279,23 +379,32 @@ export default class App extends Component {
     var cpuTempKeyArray = this.state.cpuKey;
     var memoryTempArray = this.state.memory;
     var memoryTempKeyArray = this.state.memoryKey;
+    var wifiTempArray = this.state.wifi;
+    var wifiTempKeyArray = this.state.wifiKey;
     var cpuOverMax = (this.state.cpu.length - 60);
     var memoryOverMax = (this.state.memory.length - 60);
+    var wifiOverMax = (this.state.wifi.length - 60);
     if (cpuOverMax > 1) {
       cpuTempArray.splice(0, cpuOverMax);
       cpuTempKeyArray.splice(0, cpuOverMax);
       memoryTempArray.splice(0, memoryOverMax);
       memoryTempKeyArray.splice(0, memoryOverMax);
+      wifiTempArray.splice(0, wifiOverMax);
+      wifiTempKeyArray.splice(0, wifiOverMax);
     } else {
       cpuTempArray.splice(0, 1);
       cpuTempKeyArray.splice(0, 1);
       memoryTempArray.splice(0, 1);
       memoryTempKeyArray.splice(0, 1);
+      wifiTempArray.splice(0, 1);
+      wifiTempKeyArray.splice(0, 1);
     }
     this.setState({cpu: cpuTempArray });
     this.setState({cpuKey: cpuTempKeyArray });
     this.setState({memory: memoryTempArray });
     this.setState({memoryKey: memoryTempKeyArray });
+    this.setState({wifi: wifiTempArray });
+    this.setState({wifiKey: wifiTempKeyArray });
   }
 
   // Update CPU Chart Values showing the past hour
@@ -310,32 +419,44 @@ export default class App extends Component {
       var cpuKey = this.state.cpuKey;
       var memory = this.state.memory;
       var memoryKey = this.state.memoryKey;
+      var wifi = this.state.wifi;
+      var wifiKey = this.state.wifiKey;
       for (var i = 0; i < hourResponse.length; i++) {
         var d = new Date();
-        var seconds = d.getSeconds()
+        var seconds = d.getSeconds();
+        // Converting Memory data down one decimal
         hourResponse[i].MemoryGb = (hourResponse[i].MemoryGb * .1);
         d.setSeconds(seconds - i);
         cpu.unshift(hourResponse[i].CpuPercent)
         memory.unshift(hourResponse[i].MemoryGb)
+        wifi.unshift(hourResponse[i].WiFi)
         cpuKey.unshift(d.toLocaleTimeString('en-US'))
         memoryKey.unshift(d.toLocaleTimeString('en-US'))
+        wifiKey.unshift(d.toLocaleTimeString('en-US'))
       }
       this.setState({cpu: cpu });
       this.setState({cpuKey: cpuKey });
       this.setState({memory: memory });
       this.setState({memoryKey: memoryKey });
+      this.setState({wifi: wifi });
+      this.setState({wifiKey: wifiKey });
       var updatedDataCpu  = {};
       var updatedDataMemory  = {};
+      var updatedDataWifi  = {};
       updatedDataCpu = chartCpu;
       updatedDataMemory = chartMemory;
+      updatedDataWifi = chartWifi;
       updatedDataCpu.datasets[0].data = this.state.cpu;
       updatedDataMemory.datasets[0].data = this.state.memory;
+      updatedDataWifi.datasets[0].data = this.state.wifi;
       updatedDataCpu.labels = this.state.cpuKey;
       updatedDataMemory.labels = this.state.memoryKey;
+      updatedDataWifi.labels = this.state.wifiKey;
       const chartDataCpu = updatedDataCpu;
       const chartDataMemory = updatedDataMemory;
+      const chartDataWifi = updatedDataWifi;
       // Set updated chart data state
-      this.setState({chartDataCpu, chartDataMemory, updated: !this.state.updated});
+      this.setState({chartDataCpu, chartDataMemory, chartDataWifi, updated: !this.state.updated});
     });
   }
 
@@ -343,16 +464,21 @@ export default class App extends Component {
   handleUpdate() {
     var updatedDataCpu  = {};
     var updatedDataMemory  = {};
+    var updatedDataWifi  = {};
     updatedDataCpu = chartCpu;
     updatedDataMemory = chartMemory;
+    updatedDataWifi = chartWifi;
     updatedDataCpu.datasets[0].data = this.state.cpu;
     updatedDataMemory.datasets[0].data = this.state.memory;
+    updatedDataWifi.datasets[0].data = this.state.wifi;
     updatedDataCpu.labels = this.state.cpuKey;
     updatedDataMemory.labels = this.state.memoryKey;
+    updatedDataWifi.labels = this.state.wifiKey;
     const chartDataCpu = updatedDataCpu;
     const chartDataMemory = updatedDataMemory;
+    const chartDataWifi = updatedDataWifi;
     // Set updated chart data state
-    this.setState({chartDataCpu, chartDataMemory, updated: !this.state.updated});
+    this.setState({chartDataCpu, chartDataMemory, chartDataWifi, updated: !this.state.updated});
     // Trigger fetchHeartbeatData function every second
     setTimeout(function() { this.fetchHeartbeatData(); }.bind(this), 1000);
   }
@@ -364,6 +490,7 @@ export default class App extends Component {
           <div className="col-6">
             <div onClick={this.onClickCpu}>Show CPU</div>
             <div onClick={this.onClickMemory}>Show Memory</div>
+            <div onClick={this.onClickWifi}>Show Wifi</div>
             <button onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
               View hour
             </button>
@@ -401,6 +528,21 @@ export default class App extends Component {
               <p>0</p>
             </div>
           </ToggleMemory>
+          <div class="w-100"></div>
+          <ToggleWifi hiddenWifi={this.state.hiddenWifi}>
+            <div className="chart-title-container">
+              <h2>Wi-Fi</h2>
+            </div>
+            <div className="chart-label-container chart-label-container--top">
+              <p>Throughput</p>
+              <p>100 Kbps</p>
+            </div>
+            <Line data={this.state.chartDataWifi} options={this.state.chartOptionsWifi}/>
+            <div className="chart-label-container chart-label-container--bottom">
+              <p>{this.state.chartLabel}</p>
+              <p>0</p>
+            </div>
+          </ToggleWifi>
         </div>
       </div>
     );

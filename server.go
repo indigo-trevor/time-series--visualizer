@@ -24,6 +24,7 @@ type HourData struct {
 type Heartbeat struct {
 	CpuPercent int `json:"CpuPercent"`
 	MemoryGb 	 int `json:"MemoryGb"`
+	WiFi 			 int `json:"WiFi"`
 }
 
 // Main Go function
@@ -47,6 +48,7 @@ func main() {
 		localHeartbeatData := Heartbeat{
 			CpuPercent:  rand.Intn(15),
 			MemoryGb: random(60, 75),
+			WiFi: random(0, 100),
 		}
 
 		ctx.JSON(200, &localHeartbeatData)
