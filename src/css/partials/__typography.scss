@@ -1,6 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:700');
+@import url('https://fonts.googleapis.com/css?family=Proza+Libre');
+
+body {
+  font-family: 'Proza Libre', sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  @include respond-to(sm) {
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
 h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4em;
+  line-height: 1em;
   margin: 0em 0em .25em 0em;
 }
 h2 {
+  font-family: 'Proza Libre', sans-serif;
+  font-size: 1.9em;
+  line-height: 1em;
   margin: 0em 0em .25em 0em;
+}
+p,a,button,span {
+  font-family: 'Proza Libre', sans-serif;
+}
+button {
+  line-height: 1em;
 }

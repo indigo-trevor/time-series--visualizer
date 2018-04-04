@@ -9,8 +9,8 @@ const cpuColor = 'rgba(17,125,187,1)';
 const cpuColorDimmed = 'rgba(17,125,187,0.5)';
 const memoryColor = 'rgba(139,18,174,1)';
 const memoryColorDimmed = 'rgba(139,18,174,0.5)';
-const wifiColor = 'rgba(167,79,1,1)';
-const wifiColorDimmed = 'rgba(167,79,1,0.5)';
+const wifiColor = 'rgba(247,148,30,1)';
+const wifiColorDimmed = 'rgba(247,148,30,0.5)';
 const discColor = 'rgba(77,166,12,1)';
 const discColorDimmed = 'rgba(77,166,12,0.5)';
 
