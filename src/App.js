@@ -640,24 +640,27 @@ export default class App extends Component {
   render() {
     return(
       <div className="app-container">
+        <section className="section section--hero">
+          <div className="section-inner">
+            <h1>Time-series Visualizer</h1>
+          </div>
+        </section>
         <section className="section section--sub-nav">
           <div className="section-inner">
             <div className="filter">
               <div className="type-filter">
-                <button onClick={this.onClickCpu}>CPU</button>
-                <button onClick={this.onClickMemory}>Memory</button>
-                <button onClick={this.onClickWifi}>Wifi</button>
-                <button onClick={this.onClickDisc}>Disc</button>
+                <button className={`button--filter button--filter--cpu ${!this.state.hiddenCpu ? "is-active" : ""}`} onClick={this.onClickCpu}>CPU<div></div></button>
+                <button className={`button--filter button--filter--memory ${!this.state.hiddenMemory ? "is-active" : ""}`} onClick={this.onClickMemory}>Memory<div></div></button>
+                <button className={`button--filter button--filter--wifi ${!this.state.hiddenWifi ? "is-active" : ""}`} onClick={this.onClickWifi}>Wifi<div></div></button>
+                <button className={`button--filter button--filter--disc ${!this.state.hiddenDisc ? "is-active" : ""}`} onClick={this.onClickDisc}>Disc<div></div></button>
               </div>
               <ToggleTimeFilter hiddenTimeFilter={(this.state.hiddenCpu && this.state.hiddenMemory && this.state.hiddenWifi && this.state.hiddenDisc )}>
-                <div className="time-filter">
-                  <button onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
-                  View hour
-                  </button>
-                  <button onClick={this.viewMinuteData} disabled={!this.state.isViewingHourOn}>
-                  View minute
-                  </button>
-                </div>
+                <button className="button--filter button--filter--time" onClick={this.viewHourData} disabled={this.state.isViewingHourOn}>
+                View hour
+                </button>
+                <button className="button--filter button--filter--time" onClick={this.viewMinuteData} disabled={!this.state.isViewingHourOn}>
+                View minute
+                </button>
               </ToggleTimeFilter>
             </div>
           </div>

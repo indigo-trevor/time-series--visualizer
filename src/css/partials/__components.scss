@@ -1,10 +1,12 @@
 // Filter component
 .filter {
   .type-filter {
-    
+
   }
   .time-filter {
-
+    position: relative;
+    width: 100%;
+    padding: 15px 0px;
   }
 }
 // Chart component
@@ -67,5 +69,118 @@
   &:nth-child(4) {
     margin-top: 4%;
     margin-left: 4%;
+  }
+}
+// Buttons
+.button--filter {
+  position: relative;
+  border: none;
+  padding: 7px 15px 7px 15px;
+  margin-right: 1em;
+  background-color: rgba($almostBlack,0.75);
+  color: white;
+  cursor: pointer;
+  transition: all 350ms;
+  transform: scale(1);
+  div {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 0%;
+    height: 3px;
+    transition: all 350ms;
+  }
+  &--cpu {
+    div {
+      background-color: $cpu;
+    }
+    &.is-active {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $cpu;
+      }
+    }
+    &:hover {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $cpu;
+      }
+    }
+  }
+  &--memory {
+    div {
+      background-color: $memory;
+    }
+    &.is-active {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $memory;
+      }
+    }
+    &:hover {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $memory;
+      }
+    }
+  }
+  &--wifi {
+    div {
+      background-color: $wifi;
+    }
+    &.is-active {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $wifi;
+      }
+    }
+    &:hover {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $wifi;
+      }
+    }
+  }
+  &--disc {
+    div {
+      background-color: $disc;
+    }
+    &.is-active {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $disc;
+      }
+    }
+    &:hover {
+      background-color: rgba($almostBlack,1);
+      div {
+        width: 100%;
+        background-color: $disc;
+      }
+    }
+  }
+  &--time {
+    position: absolute;
+    left: 0px;
+    top: 15px;
+    z-index: 2;
+    width: 150px;
+    background-color: rgba($almostBlack,1);
+    &:disabled {
+      display: none;
+    }
+  }
+  &:focus {
+    outline: none;
+  }
+  &:active {
+    transform: scale(0.95);
   }
 }

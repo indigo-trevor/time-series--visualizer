@@ -3,8 +3,11 @@
     position: relative;
     width: 100%;
     float: left;
+    &--hero {
+      padding: 15px 0px;
+    }
     &--sub-nav {
-
+      padding: 15px 0px;
     }
     &--charts {
       padding: 50px 0px;
