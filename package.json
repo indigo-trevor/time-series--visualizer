@@ -6,7 +6,8 @@
   },
   "scripts": {
     "dev": "webpack -d --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "test": "jest"
   },
   "devDependencies": {
     "axios": "^0.18.0",
@@ -15,10 +16,14 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "img-loader": "^2.0.1",
+    "jest": "^22.4.3",
     "node-sass": "^4.8.3",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.3.0",
+    "react-test-renderer": "^16.3.1",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
     "webpack": "^3.6.0",
