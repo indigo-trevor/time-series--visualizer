@@ -502,7 +502,6 @@ export default class App extends Component {
   // Update CPU Chart Values showing the past minute
   viewMinuteData() {
     this.setState({isViewingHourOn: false });
-    console.log("viewing minute data")
     this.setState({ chartLabel: '60 seconds' })
     var cpuTempArray = this.state.cpu;
     var cpuTempKeyArray = this.state.cpuKey;
@@ -548,7 +547,6 @@ export default class App extends Component {
   // Update CPU Chart Values showing the past hour
   viewHourData() {
     this.setState({isViewingHourOn: true });
-    console.log("viewing hour data")
     this.setState({ chartLabel: 'Past Hour' })
     axios.get(apiHour)
     .then(res => {

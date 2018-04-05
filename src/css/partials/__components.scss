@@ -9,6 +9,8 @@
     width: 100%;
     height: 55px;
     padding-top: 15px;
+    animation-name: fade-in;
+    animation-duration: 300ms;
   }
 }
 // Chart component
@@ -47,11 +49,11 @@
     }
   }
   &.toggle-enter {
-    animation-name: fade-in;
+    animation-name: zoom-in;
     animation-duration: 300ms;
   }
   &.toggle-leave {
-    animation-name: fade-out;
+    animation-name: zoom-out;
     animation-duration: 300ms;
   }
   &:first-child {
