@@ -43,3 +43,11 @@ App displaying computer performance metrics through graphical visualizations.
 `npm run build`
 
 *Packaged up build is placed in __dist__ folder (git-ignored)*
+
+### Testing
+1. Front-end testing is handled using [Jest](https://facebook.github.io/jest/)
+2. To run automated testing scripts, run the following from the terminal:
+
+`npm test`
+
+*Testing plan under development*
