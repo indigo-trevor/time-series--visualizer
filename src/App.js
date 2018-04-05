@@ -14,7 +14,7 @@ const wifiColorDimmed = 'rgba(247,148,30,0.5)';
 const discColor = 'rgba(77,166,12,1)';
 const discColorDimmed = 'rgba(77,166,12,0.5)';
 
-// CPU Chart data
+// START: Declaring chart's default data options
 const chartCpu = {
   labels: [0,1,2,3,4,5],
   datasets: [{
@@ -30,8 +30,6 @@ const chartCpu = {
     pointBackgroundColor: cpuColorDimmed
   }]
 };
-
-// Memory Chart data
 const chartMemory = {
   labels: [0,1,2,3,4,5],
   datasets: [{
@@ -47,8 +45,6 @@ const chartMemory = {
     pointBackgroundColor: memoryColorDimmed
   }]
 };
-
-// Wifi Chart data
 const chartWifi = {
   labels: [0,1,2,3,4,5],
   datasets: [{
@@ -64,8 +60,6 @@ const chartWifi = {
     pointBackgroundColor: wifiColorDimmed
   }]
 };
-
-// Disc Chart data
 const chartDisc = {
   labels: [0,1,2,3,4,5],
   datasets: [{
@@ -81,8 +75,8 @@ const chartDisc = {
     pointBackgroundColor: discColorDimmed
   }]
 };
-
-// CPU Chart options
+// END: Declaring chart's default data options
+// START: Declaring chart's default config options
 const chartOptionsCpu = {
   legend: {
     display: false
@@ -118,8 +112,6 @@ const chartOptionsCpu = {
     }]
   }
 };
-
-// Memory Chart options
 const chartOptionsMemory = {
   legend: {
     display: false
@@ -155,8 +147,6 @@ const chartOptionsMemory = {
     }]
   }
 };
-
-// Wifi Chart options
 const chartOptionsWifi = {
   legend: {
     display: false
@@ -192,8 +182,6 @@ const chartOptionsWifi = {
     }]
   }
 };
-
-// Disc Chart options
 const chartOptionsDisc = {
   legend: {
     display: false
@@ -229,109 +217,73 @@ const chartOptionsDisc = {
     }]
   }
 };
-
-// Css transition implementation that shows and hides Cpu chart
+// END: Declaring chart's default config options
+// START: Declaring each chart component using ReactCSSTransitionGroup
 class ToggleCpu extends React.Component {
   render() {
     return <ReactCSSTransitionGroup
-            component={CpuChart}
+            component={ShowElement}
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {this.props.hiddenCpu ? null : <div className="chart chart--cpu">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
-
   }
 }
-
-// Css transition implementation that shows and hides Memory chart
 class ToggleMemory extends React.Component {
   render() {
     return <ReactCSSTransitionGroup
-            component={MemoryChart}
+            component={ShowElement}
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {this.props.hiddenMemory ? null : <div className="chart chart--memory">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
-
   }
 }
-
-// Css transition implementation that shows and hides Wifi chart
 class ToggleWifi extends React.Component {
   render() {
     return <ReactCSSTransitionGroup
-            component={WifiChart}
+            component={ShowElement}
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {this.props.hiddenWifi ? null : <div className="chart chart--wifi">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
-
   }
 }
-
-// Css transition implementation that shows and hides Wifi chart
 class ToggleDisc extends React.Component {
   render() {
     return <ReactCSSTransitionGroup
-            component={DiscChart}
+            component={ShowElement}
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {this.props.hiddenDisc ? null : <div className="chart chart--disc">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
-
   }
 }
-
-// Css transition implementation that shows and hides Wifi chart
 class ToggleTimeFilter extends React.Component {
   render() {
     return <ReactCSSTransitionGroup
-            component={TimeFilter}
+            component={ShowElement}
             transitionName="toggle"
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}>
             {this.props.hiddenTimeFilter ? null : <div className="time-filter">{this.props.children}</div>}
       </ReactCSSTransitionGroup>
-
   }
 }
-
-// Function that ensures only the Cpu component it shown and removes containing span element
-function CpuChart(props) {
+// END: Declaring each chart component using ReactCSSTransitionGroup
+// START: The below function ensures that there is no <span> wrapper around the ReactCSSTransitionGroup elements
+function ShowElement(props) {
   const childrenArray = React.Children.toArray(props.children);
   return childrenArray[0] || null;
 }
-
-// Function that ensures only the Memory component it shown and removes containing span element
-function MemoryChart(props) {
-  const childrenArray = React.Children.toArray(props.children);
-  return childrenArray[0] || null;
-}
-
-// Function that ensures only the Wifi component it shown and removes containing span element
-function WifiChart(props) {
-  const childrenArray = React.Children.toArray(props.children);
-  return childrenArray[0] || null;
-}
-
-// Function that ensures only the Disc component it shown and removes containing span element
-function DiscChart(props) {
-  const childrenArray = React.Children.toArray(props.children);
-  return childrenArray[0] || null;
-}
-
-// Function that ensures only the Time filter component it shown and removes containing span element
-function TimeFilter(props) {
-  const childrenArray = React.Children.toArray(props.children);
-  return childrenArray[0] || null;
-}
-
-// Main App component
+// END: The below function ensures that there is no <span> wrapper around the ReactCSSTransitionGroup elements
+// START: Main App component
 export default class App extends Component {
+// START: Constructor. State declarations
   constructor(props) {
     super(props);
     this.state = {
@@ -360,6 +312,7 @@ export default class App extends Component {
       hiddenTimeFilter:true,
       isViewingHourOn: false
     }
+    // Set binding functions
     this.onClickCpu = this.onClickCpu.bind(this);
     this.onClickMemory = this.onClickMemory.bind(this);
     this.onClickWifi = this.onClickWifi.bind(this);
@@ -368,40 +321,35 @@ export default class App extends Component {
     this.viewHourData = this.viewHourData.bind(this);
     this.viewMinuteData = this.viewMinuteData.bind(this);
   }
-
-  // On click, toggle display of Cpu Chart
+// END: Constructor. State declarations
+// START: On click, toggle display aligning chart
   onClickCpu() {
     this.setState((prevState, props) => ({
       hiddenCpu: !(prevState.hiddenCpu)
     }))
   }
-
-  // On click, toggle display of Memory Chart
   onClickMemory() {
     this.setState((prevState, props) => ({
       hiddenMemory: !(prevState.hiddenMemory)
     }))
   }
-
-  // On click, toggle display of Wifi Chart
   onClickWifi() {
     this.setState((prevState, props) => ({
       hiddenWifi: !(prevState.hiddenWifi)
     }))
   }
-
-  // On click, toggle display of Disc Chart
   onClickDisc() {
     this.setState((prevState, props) => ({
       hiddenDisc: !(prevState.hiddenDisc)
     }))
   }
-
-  // On mount, initiate heartbeat call
+// END: On click, toggle display aligning chart
+// START: On mount, initiate heartbeat call
   componentDidMount() {
     this.fetchHeartbeatData()
   }
-
+// END: On mount, initiate heartbeat call
+// START: Heartbeat API call.  This is where we fetch the heartbeat data from the backend and manipulate it into local variables.
   fetchHeartbeatData() {
     axios.get(apiHeartbeat)
       .then(res => {
@@ -417,7 +365,7 @@ export default class App extends Component {
         var heartbeatCounter = new Date().toLocaleTimeString();
         // Converting Memory data down one decimal
         heartbeatResponse.MemoryGb = (heartbeatResponse.MemoryGb * .1);
-        // The below logic conditionally manipulates the data coming from the backend
+        // The below logic conditionally manipulates the data coming from the heartbeat call
         if (this.state.cpu.length == 60) {
           // For viewing minute data, restrict data array to 60
           var cpuTempArray = this.state.cpu;
@@ -458,6 +406,7 @@ export default class App extends Component {
           var memoryOverMax = (this.state.memory.length - 3600);
           var wifiOverMax = (this.state.wifi.length - 3600);
           var discOverMax = (this.state.disc.length - 3600);
+          // If length of array is over 3600, splice the ammount over 3600 from the array
           if (cpuOverMax > 1) {
             cpuTempArray.splice(0, cpuOverMax);
             cpuTempKeyArray.splice(0, cpuOverMax);
@@ -477,6 +426,7 @@ export default class App extends Component {
             discTempArray.splice(0, 1);
             discTempKeyArray.splice(0, 1);
           }
+          // Updated states
           this.setState({cpu: cpuTempArray });
           this.setState({cpuKey: cpuTempKeyArray });
           this.setState({memory: memoryTempArray });
@@ -499,10 +449,13 @@ export default class App extends Component {
         this.handleUpdate();
       });
   }
-  // Update CPU Chart Values showing the past minute
+// END: Heartbeat API call.  This is where we fetch the heartbeat data from the backend and manipulate it into local variables.
+// START: Update chart values to showing the last minute (60 seconds)
   viewMinuteData() {
+    // Update chart labels and disabled button states
     this.setState({isViewingHourOn: false });
     this.setState({ chartLabel: '60 seconds' })
+    // Set local variables to current states
     var cpuTempArray = this.state.cpu;
     var cpuTempKeyArray = this.state.cpuKey;
     var memoryTempArray = this.state.memory;
@@ -515,6 +468,7 @@ export default class App extends Component {
     var memoryOverMax = (this.state.memory.length - 60);
     var wifiOverMax = (this.state.wifi.length - 60);
     var discOverMax = (this.state.disc.length - 60);
+    // If length of array is over 60, splice the ammount over 60 from the array
     if (cpuOverMax > 1) {
       cpuTempArray.splice(0, cpuOverMax);
       cpuTempKeyArray.splice(0, cpuOverMax);
@@ -534,6 +488,7 @@ export default class App extends Component {
       discTempArray.splice(0, 1);
       discTempKeyArray.splice(0, 1);
     }
+    // Updated states
     this.setState({cpu: cpuTempArray });
     this.setState({cpuKey: cpuTempKeyArray });
     this.setState({memory: memoryTempArray });
@@ -543,11 +498,13 @@ export default class App extends Component {
     this.setState({disc: discTempArray });
     this.setState({discKey: discTempKeyArray });
   }
-
-  // Update CPU Chart Values showing the past hour
+// END: Update chart values to showing the last minute (60 seconds)
+// START: Update chart values to showing the last hour
   viewHourData() {
+    // Update chart labels and disabled button states
     this.setState({isViewingHourOn: true });
     this.setState({ chartLabel: 'Past Hour' })
+    // Initiate api call that fetches data from the past Hour
     axios.get(apiHour)
     .then(res => {
       var hourResponse = res.data;
@@ -559,21 +516,26 @@ export default class App extends Component {
       var wifiKey = this.state.wifiKey;
       var disc = this.state.disc;
       var discKey = this.state.discKey;
+      // Loops through the api hour call, setting the Key values for the chart based off of length of data recieved
       for (var i = 0; i < hourResponse.length; i++) {
-        var d = new Date();
-        var seconds = d.getSeconds();
         // Converting Memory data down one decimal
         hourResponse[i].MemoryGb = (hourResponse[i].MemoryGb * .1);
+        // Sets the key value to the current time iterating backwards by 1 second
+        var d = new Date();
+        var seconds = d.getSeconds();
         d.setSeconds(seconds - i);
+        // Places the hour data at the front of the array
         cpu.unshift(hourResponse[i].CpuPercent);
         memory.unshift(hourResponse[i].MemoryGb);
         wifi.unshift(hourResponse[i].WiFi);
         disc.unshift(hourResponse[i].Disc);
+        // Places the hour keys at the front of the array
         cpuKey.unshift(d.toLocaleTimeString('en-US'))
         memoryKey.unshift(d.toLocaleTimeString('en-US'))
         wifiKey.unshift(d.toLocaleTimeString('en-US'))
         discKey.unshift(d.toLocaleTimeString('en-US'))
       }
+      // Updates states
       this.setState({cpu: cpu });
       this.setState({cpuKey: cpuKey });
       this.setState({memory: memory });
@@ -582,18 +544,22 @@ export default class App extends Component {
       this.setState({wifiKey: wifiKey });
       this.setState({disc: disc });
       this.setState({discKey: discKey });
+      // Declaring local chart data for manipulation below
       var updatedDataCpu  = {};
       var updatedDataMemory  = {};
       var updatedDataWifi  = {};
       var updatedDataDisc  = {};
+      // Setting charts data to inititial chart data and options
       updatedDataCpu = chartCpu;
       updatedDataMemory = chartMemory;
       updatedDataWifi = chartWifi;
       updatedDataDisc = chartDisc;
+      // Updating charts datasets
       updatedDataCpu.datasets[0].data = this.state.cpu;
       updatedDataMemory.datasets[0].data = this.state.memory;
       updatedDataWifi.datasets[0].data = this.state.wifi;
       updatedDataDisc.datasets[0].data = this.state.disc;
+      // Updating charts labels
       updatedDataCpu.labels = this.state.cpuKey;
       updatedDataMemory.labels = this.state.memoryKey;
       updatedDataWifi.labels = this.state.wifiKey;
@@ -606,21 +572,25 @@ export default class App extends Component {
       this.setState({chartDataCpu, chartDataMemory, chartDataWifi, chartDataDisc, updated: !this.state.updated});
     });
   }
-
-  // Update chart
+// END: Update chart values to showing the last hour
+// START: Fuction that handles that update of each chart instance
   handleUpdate() {
+    // Declaring local chart data for manipulation below
     var updatedDataCpu  = {};
     var updatedDataMemory  = {};
     var updatedDataWifi  = {};
     var updatedDataDisc  = {};
+    // Setting charts data to inititial chart data and options
     updatedDataCpu = chartCpu;
     updatedDataMemory = chartMemory;
     updatedDataWifi = chartWifi;
     updatedDataDisc = chartDisc;
+    // Updating charts datasets
     updatedDataCpu.datasets[0].data = this.state.cpu;
     updatedDataMemory.datasets[0].data = this.state.memory;
     updatedDataWifi.datasets[0].data = this.state.wifi;
     updatedDataDisc.datasets[0].data = this.state.disc;
+    // Updating charts labels
     updatedDataCpu.labels = this.state.cpuKey;
     updatedDataMemory.labels = this.state.memoryKey;
     updatedDataWifi.labels = this.state.wifiKey;
@@ -634,7 +604,8 @@ export default class App extends Component {
     // Trigger fetchHeartbeatData function every second
     setTimeout(function() { this.fetchHeartbeatData(); }.bind(this), 1000);
   }
-
+// END: Fuction that handles that update of each chart instance
+// START: Rendering of html
   render() {
     return(
       <div className="app-container">
@@ -726,5 +697,6 @@ export default class App extends Component {
       </div>
     );
   }
-
+// END: Rendering of html
 }
+// END: Main App component

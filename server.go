@@ -39,13 +39,15 @@ func main() {
 	m.Get("/*", func(ctx *macaron.Context) {
 		ctx.HTML(200, "homepage", nil)
 	})
-	// Creates hour data endpoint
+
+	// Creates Hour endpoint
 	dataHour := getHourData()
 	m.Get("/hour", func(ctx *macaron.Context) {
 		localHourData := dataHour
 		ctx.JSON(200, &localHourData)
 	})
-	// Creates endpoint for CPU heartbeat data
+
+	// Creates Heartbeat endpoint
 	m.Get("/heartbeat", func(w, ctx *macaron.Context) {
 		localHeartbeatData := Heartbeat{
 			CpuPercent:  rand.Intn(15),
